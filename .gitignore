@@ -1,0 +1,14 @@
+
+backend/
+frontend/
+data/
+data_*
+.vscode/
+
+docker-compose.override.yml*
+
+.DS_STORE
+.env
+
+/config/migrations/local/
+/config/search/update-handler.store
