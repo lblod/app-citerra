@@ -1,20 +1,20 @@
-# Burgernabije Besluitendatabank (back-end)
+# Citerra (back-end)
 
-[The back-end for BNB](https://burgernabije-besluitendatabank-dev.s.redhost.be/), a project that uses linked data to empower everyone in Flanders to consult the decisions made by their local authorities.
+[The back-end for citerra](https://citerra.lokaalbeslist.lblod.info/), a project that uses linked data to empower everyone in Flanders to consult the decisions made by their local authorities.
 
 This project has different important moving parts:
 - The harvester (which is available in [the app-lblod-harvester repository](https://github.com/lblod/app-lblod-harvester)). This processes government-provided data into consumable [data endpoints, which you can view here](#what-endpoints-can-be-used)
 - The back-end (this repository). This is a docker-compose configuration that combines the front-end together with other services.
-- The front-end (which is available in [the frontend-burgernabije-besluitendatabank repo](https://github.com/lblod/frontend-burgernabije-besluitendatabank)). This is an Ember frontend 
+- The front-end (which is available in [the frontend-citerra repo](https://github.com/lblod/frontend-citerra)). This is an Ember frontend
 
 
-You can check out more info on besluitendatabanken [here](https://lokaalbestuur.vlaanderen.be/besluitendatabank), and the [back-end](https://github.com/lblod/frontend-burgernabije-besluitendatabank) here. The front-end repo only contains front-end specific information, back-and and general project info will be added here.
+You can check out more info on besluitendatabanken [here](https://lokaalbestuur.vlaanderen.be/besluitendatabank), and the [back-end](https://github.com/lblod/frontend-citerra) here. The front-end repo only contains front-end specific information, back-and and general project info will be added here.
 
 
 
 ## Tutorials
 You can run this app in a few different ways
-- Only run the front-end and use the existing back-end. [Instructions for this can be found in the frontend repo](https://github.com/lblod/frontend-burgernabije-besluitendatabank)
+- Only run the front-end and use the existing back-end. [Instructions for this can be found in the frontend repo](https://github.com/lblod/frontend-citerra)
 - Run the back-end with your own consumers & front-end included. [Instructions for this are found below](#basic-setup)
 
 **Pre-requisites**: Docker & Docker-Compose installed. Some parts of the tutorials may use drc as an alias for docker-compose
@@ -22,8 +22,8 @@ You can run this app in a few different ways
 ### Basic setup
 First, clone the repository
 ```bash
-git clone https://github.com/lblod/app-burgernabije-besluitendatabank.git
-cd app-burgernabije-besluitendatabank.git
+git clone https://github.com/lblod/app-citerra.git
+cd app-citerra.git
 ```
 
 #### Selecting endpoints
@@ -64,7 +64,7 @@ Then start the server using `docker-compose up --detach`
 
 
 ### Sync data external data consumers
-The procedure below describes how to set up the sync for besluiten-consumer. 
+The procedure below describes how to set up the sync for besluiten-consumer.
 The procedures should be the similar for `op-public-consumer` and `mandatendatabank-consumer`. If there are variations in the steps for these consumers, it will be noted.
 
 The synchronization of external data sources is a structured process divided into three key stages. The first stage, known as 'initial sync', requires manual interventions primarily due to performance considerations. Following this, there's a post-processing stage, where depending on the delta-consumer stream, it may be necessary to initiate certain background processes to ensure system consistency. The final stage involves transitioning the system to the 'normal operation' mode, wherein all functions are designed to be executed automatically.
@@ -105,7 +105,7 @@ services:
 ```
 Ensure the flag `BYPASS_MU_AUTH_FOR_EXPENSIVE_QUERIES` is set to `false` for **EVERY CONSUMER**
 
-- start the stack. `drc up -d`. 
+- start the stack. `drc up -d`.
 
   Data should be ingesting.
   Check the logs `drc logs -f --tail=200 besluiten-consumer`
@@ -145,7 +145,7 @@ docker-compose logs -f --tail=200 besluiten-consumer 2>&1 | grep -i "flush"
 
 ###### op-public-consumer & mandatendatabank-consumer
 As of the time of writing, there is some overlap between the two data producers due to practical reasons. This issue will be resolved eventually. For the time being, if re-synchronization is required, it's advisable to re-sync both consumers.
-The procedure is identical to the one for besluiten-consumer, but with a bit of an extra synchronsation hassle. 
+The procedure is identical to the one for besluiten-consumer, but with a bit of an extra synchronsation hassle.
 For both consumers you will need to first run steps 1 up to and including step 5. Once these steps completed for both consumers, you can proceed and start ingesting the data again.
 
 #### 2. post-processing
@@ -188,7 +188,7 @@ To setup a local development environment, you can follow the steps below.
 1. Clone the repository
 2. Create .env file in the root of the project: `COMPOSE_FILE=docker-compose.yml:docker-compose.dev.yml > .env`
 3. Run `docker-compose up -d`
-4. Wait for all initialSync consumers to finish. You can check progression with this sparql query: 
+4. Wait for all initialSync consumers to finish. You can check progression with this sparql query:
 ```sparql
 PREFIX adms: <http://www.w3.org/ns/adms#>
 PREFIX task: <http://redpencil.data.gift/vocabularies/tasks/>
@@ -206,7 +206,7 @@ SELECT ?s ?operation ?status ?created ?modified ?creator WHERE {
 ORDER BY DESC(?created)
 LIMIT 100
 ```
-5. switch consumers to 'normal operation' mode in `docker-compose.dev.yml` as described in the previous section. 
+5. switch consumers to 'normal operation' mode in `docker-compose.dev.yml` as described in the previous section.
 6. Run `docker-compose up -d` to restart the stack
 7. `./scripts/reset-elastic.sh` reset elastic search
 Progression is visible via: `docker compose logs search -tf --tail=100`
@@ -214,7 +214,7 @@ Progression is visible via: `docker compose logs search -tf --tail=100`
 
 ### Bestuursorganen Report
 
-The report is generated every Sunday at 23:00. The report is available at `/download-exports/exports/Bestuursorganen`. 
+The report is generated every Sunday at 23:00. The report is available at `/download-exports/exports/Bestuursorganen`.
 
 #### Trigger report generation manually
 
